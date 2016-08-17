@@ -1,30 +1,19 @@
 [[stopwords-performance]]
-=== Stopwords and Performance
+=== 停用词与性能
 
-The biggest disadvantage of keeping stopwords is that of performance. When
-Elasticsearch performs a ((("stopwords", "performance and")))full-text search, it has to calculate the relevance
-`_score` on all matching documents in order to return the top 10 matches.
+保留禁用词最大的缺点就影响搜索性能。使用Elasticsearch进行((("stopwords", "performance and")))全文搜索，为了返回匹配的前10需要查询关联的`_score`的全部文档。
 
-While most words typically occur in much fewer than 0.1% of all documents, a
-few words such as `the` may occur in almost all of them.  Imagine you have an
-index of one million documents.  A query for `quick brown fox` may match  fewer
-than 1,000 documents.  But a query for `the quick brown fox` has to score and
-sort almost all of the one million documents in your index, just in order to
-return the top 10!
+虽然大多数的词汇在所有文档中出现的频率低于0.1％，但是少数例如`the`的词汇几乎存在于所有的文档中。试想一下，你有100ｗ个文档。查询`quick brown fox` 词组，能够匹配上的可能少于1000个。但是如果查询`the quick brown fox` ，几乎需要匹配索引中的100ｗ个文档，而只是为了返回前10。
 
-The problem is that `the quick brown fox` is really a query for `the OR quick
-OR brown OR fox`&#x2014;any document that contains nothing more than the almost
-meaningless term `the` is included in the result set.  What we need is a way of
-reducing the number of documents that need to be scored.
+问题的关键是`the quick brown fox` 词组实际是查询`the`或`quick`或`brown`或`fox`&#x2014;很多包含`the`词条的文档没有任何意义，但包含在返回的结果集中。
+我们需要的是一种方式减少了需要被评分的文档数。
 
 [[stopwords-and]]
-==== and Operator
+==== 停用词与性能与操作符
 
-The easiest way to reduce the number of documents is simply to use the
-<<match-improving-precision,`and` operator>> with the `match` query, in order
-to make all ((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))words required.
+最简单的减少查询文件数量的方法是在<<match-improving-precision,`and` operator>>`match`查询时，设置所有词汇 ((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))都是必须的。
 
-A `match` query like this:
+以下是`match`查询的设置：
 
 [source,json]
 ---------------------------------
@@ -32,13 +21,12 @@ A `match` query like this:
     "match": {
         "text": {
             "query":    "the quick brown fox",
-            "operator": "and"
-        }
+            "operator": "and
     }
 }
 ---------------------------------
 
-is rewritten as a `bool` query like this:
+如果换成`bool`查询如下：
 
 [source,json]
 ---------------------------------
@@ -54,17 +42,13 @@ is rewritten as a `bool` query like this:
 }
 ---------------------------------
 
-The `bool` query is intelligent enough to execute each `term` query in the
-optimal order--it starts with the least frequent term.  Because all terms
-are required, only documents that contain the least frequent term can possibly
-match. Using the `and` operator greatly speeds up multiterm queries.
+ `bool`查询器足够智能，在执行每一个`term`查询的最佳次序--他开始用最少的频繁词。因为所有条款
+是必需的，只包含至少频繁词文件都不可能匹配。使用`and`操作符将大大加快多条查询。
 
-==== minimum_should_match
+==== 最低匹配(minimum_should_match)
 
-In <<match-precision>>, we discussed using the `minimum_should_match` operator
-to trim the long tail of less-relevant results.((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))  It is useful for this purpose
-alone but, as a nice side effect, it offers a similar performance benefit to
-the `and` operator:
+在精度匹配<<match-precision>>的章节里面，我们讨论过使用`minimum_should_match` 配置，减少返回的结果集。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))  
+出于这个目的，它也产生啦一个好的副作用，它提供类似于`and`操作符性能优化。
 
 [source,json]
 ---------------------------------
@@ -78,9 +62,8 @@ the `and` operator:
 }
 ---------------------------------
 
-In this example, at least three out of the four terms must match. This means
-that the only docs that need to be considered are those that contain either the least or second least frequent terms.
+在这个例子中，在四个词条中至少有三个的必须匹配。 这意味着
+该需要被考虑的唯一文档是那些包含任一至少或第二至少频繁词条。
 
-This offers a huge performance gain over a simple query with the default `or`
-operator!  But we can do better yet...
+这提供了一个使用默认的`or`操作符时，提示性能的方式。但是，我们可以做的更好...
 
