@@ -1,7 +1,7 @@
 [[using-stopwords]]
 === 如何使用停用词
 
-停用词的去除 ((("stopwords", "removal of")))处理可以应用((("stop token filter")))在创建一个`custom` 分析器(see <<stop-token-filter>>)。
+停用词的去除 ((("stopwords", "removal of")))处理 {ref}/analysis-stop-tokenfilter.html[stop token filter]可以应用((("stop token filter")))在创建一个`custom` 分析器(see <<stop-token-filter>>)。
 然而一些对外的分析器((("analyzers", "stop filter pre-integrated")))((("pattern analyzer", "stopwords and")))((("standard analyzer", "stop filter")))((("language analyzers", "stop filter pre-integrated"))) 预先集成了`stop` 过滤器 :
 
 {ref}/analysis-lang-analyzer.html[Language analyzers]::
@@ -14,13 +14,11 @@
 
 {ref}/analysis-pattern-analyzer.html[`pattern` analyzer]::
 
-    默认为`_none_`，像`standard`分析器。
+    默认为`_none_`，类似 `standard`分析器。
 
 ==== 停用词和standard分析器
 
-要结合((("standard analyzer", "stopwords and")))((("stopwords", "using with standard analyzer"))) `standard`分析器的自定义停用词使用，
-
-我们需要创建一个需要创建需要配置版本的分析器，并将`停用词`传入：
+当结合 ((("standard analyzer", "stopwords and")))((("stopwords", "using with standard analyzer"))) standard分析器使用自定义停用词时，我们所需要做的就是创建一个配置版本的分析器，并把我们需要的的停用词传入进去：
 
 [source,json]
 ---------------------------------
@@ -47,7 +45,7 @@ TIP: 任何语言分析器都可以使用相同的方式配置自定义停用词
 [[maintaining-positions]]
 ==== 维护位置
 
-`分析器` 对外的API((("stopwords", "maintaining position of terms and")))很有趣: 
+ `analyzer` API((("stopwords", "maintaining position of terms and")))的输出结果很有趣: 
 
 [source,json]
 ---------------------------------
@@ -79,7 +77,7 @@ The quick and the dead
 <1> `position` 标记每个词汇单元的位置 .
 
 和预期的一样，停用词被过滤掉了，但是有趣的是剩下的两个词条位置((("phrase matching", "stopwords and", "positions data")))没有变化:
-`quik` 是在原句第二个单词，`dead` 是第五个单词。这个机制对于短语查询很重要--如果每个术语的位置已被调整，那么查询`quick dead`就会出现错误的匹配。
+`quick` 是在原句第二个词条，`dead` 是第五个词条。这个机制对于短语查询很重要--如果保留的词条的位置被调整，那么查询`quick dead`就会出现错误的匹配。
 
 [[specifying-stopwords]]
 ==== 指定停用词
@@ -91,7 +89,7 @@ The quick and the dead
 "stopwords": [ "and", "the" ]
 ---------------------------------
 
-对特定的语言可以指定默认的停用词`_lang_` :
+特定语言的默认停用词，可以通过使用`_lang_`符号来指定:
 
 [source,json]
 ---------------------------------
@@ -103,7 +101,7 @@ TIP:
 在{ref}/analysis-stop-tokenfilter.html[`stop` token filter] 文档中找到。
 
 
-设置为`_none_`,禁用停用词((("stopwords", "disabling")))。如下示例，使用 `english` 分析器((("english analyzer", "using without stopwords"))) 不使用停用词，你可以做如下设置:
+可以通过设置特殊的数组：`_none_`来禁用停用词((("stopwords", "disabling")))。例如，使用 `english`  分析器((("english analyzer", "using without stopwords")))并禁用停用词时，可以如下设置：
 
 [source,json]
 ---------------------------------
@@ -121,10 +119,10 @@ PUT /my_index
   }
 }
 ---------------------------------
-<1>  `my_english` 分析器是基于`english` 分析器.
-<2> 禁用词设置为不可用.
+<1> `my_english` 分析器是基于`english` 分析器.
+<2> 停用词设置为不可用.
 
-最后，停用词还可以使用一行一个字的格式保存在文件中。此文件必须在集群的所有节点上，并且通过`stopwords_path`((("stopwords_path parameter"))) 参数设置路径:
+最后，停用词还可以使用一行一个单词的格式保存在文件中。此文件必须在集群的所有节点上，并且通过`stopwords_path`((("stopwords_path parameter"))) 参数设置路径:
 
 [source,json]
 ---------------------------------
@@ -142,7 +140,7 @@ PUT /my_index
   }
 }
 ---------------------------------
-<1> 到禁用词文件的路径,是相对于Elasticsearch的`config`目录
+<1> 停用词文件的路径，该路径相对于Elasticsearch的 `config` 目录。
 
 [[stop-token-filter]]
 ==== 停用语汇单元过滤器的使用
