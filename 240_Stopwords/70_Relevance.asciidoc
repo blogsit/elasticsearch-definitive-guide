@@ -1,5 +1,5 @@
 [[stopwords-relavance]]
-=== Stopwords and Relevance
+=== 停用词与相关性
 
 The last topic to cover before moving on from stopwords((("stopwords", "relevance and")))((("relevance", "stopwords and"))) is that of relevance.
 Leaving stopwords in your index could make the relevance calculation
