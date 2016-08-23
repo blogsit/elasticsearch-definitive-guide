@@ -1,19 +1,18 @@
 [[stopwords-performance]]
 === 停用词与性能
 
-保留停用词最大的缺点就影响搜索性能。使用Elasticsearch进行((("stopwords", "performance and")))全文搜索，为了返回匹配的前10需要查询关联的`_score`的全部文档。
+保留停用词最大的缺点就影响搜索性能。使用Elasticsearch进行((("stopwords", "performance and")))全文搜索，它需要为所有匹配的文档计算相关度评分 `_score` 从而返回最相关的前 10 个文档。
 
-虽然大多数的单词在所有文档中出现的频率低于0.1％，但是有少数，例如`the` 几乎存在于所有的文档中。假设有一个索引含有100万文档，查询`quick brown fox` 词组，能够匹配上的可能少于1000个。但是如果查询`the quick brown fox` ，几乎需要匹配索引中的100ｗ个文档，而只是为了返回前10。
+通常大多数的单词在所有文档中出现的频率低于0.1％，但是有少数词（例如`the`）几乎存在于所有的文档中。假设有一个索引含有100万个文档，查询 `quick brown fox` 词组，能够匹配上的可能少于1000个文档。但是如果查询`the quick brown fox` 词组，几乎需要匹配索引中的100万个文档，只是为了返回前 10 名最相关的文档。
 
-问题的关键是`the quick brown fox` 词组实际是查询`the`或`quick`或`brown`或`fox`&#x2014;很多包含`the`词条的文档没有任何意义，但包含在返回的结果集中。
-我们需要的是一种方式减少了需要被评分的文档数。
+问题的关键是`the quick brown fox` 词组实际是查询`the`或`quick`或`brown`或`fox`&#x2014; 任何文档即使它什么内容都没有而只包含 `the` 这个词也会被包括在结果集中。因此，我们需要找到一种降低待评分文档数量的方法。
 
 [[stopwords-and]]
-==== 停用词与性能与操作符
+==== and 操作符 (and Operator)
 
-最简单的减少查询文件数量的方法是在<<match-improving-precision,`and` 操作符>>`match`查询时，设置所有词汇 ((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))都是必须的。
+我们想要减少带评分文档的数量，最简单的方式就是在<<match-improving-precision,`and` 操作符>> `match` 查询时使用 `and` 操作符，((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))这样可以让所有词都是必须的。
 
-以下是`match`查询的设置：
+以下是`match`查询：
 
 [source,json]
 ---------------------------------
@@ -21,13 +20,13 @@
     "match": {
         "text": {
             "query":    "the quick brown fox",
-            "operator": "and
+            "operator": "and"
              }
     }
 }
 ---------------------------------
 
-如果换成`bool`查询如下：
+上述查询被重写为`bool`查询如下：
 
 [source,json]
 ---------------------------------
@@ -42,13 +41,12 @@
     }
 }
 ---------------------------------
- `bool`查询是足够智能的，它以最优的次序来执行每一个`term`查询。因为所有词条
-是必需的，只包含词频最小的词条不可能匹配。使用`and`操作符将大大加快多项查询。
 
-==== 最低匹配(minimum_should_match)
+ `bool` 查询会智能的根据较优的顺序依次执行每个 `term` 查询：它会从最低频的词开始。因为所有词项都必须匹配，只要包含低频词的文档才有可能匹配。使用 `and` 操作符可以大大提升多词查询的速度。
 
-在精度匹配<<match-precision>>的章节里面，我们讨论过使用`minimum_should_match` 配置，减少返回的结果集。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))  
-出于这个目的，它也产生啦一个好的副作用，它提供类似于`and`操作符性能优化。
+==== 最少匹配数(minimum_should_match)
+
+在精度匹配<<match-precision>>的章节里面，我们讨论过使用`minimum_should_match` 配置去掉结果中次相关的长尾。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))虽然它只对这个目的奏效，但是也为我们从侧面带来一个好处，，它提供`and`操作符相似的性能。
 
 [source,json]
 ---------------------------------
@@ -62,8 +60,6 @@
 }
 ---------------------------------
 
-在这个例子中，在四个词条中至少有三个的必须匹配。 这意味着
-该需要被考虑的唯一文档是那些包含任一至少或第二至少频繁词条。
-
-这提供了一个使用默认的`or`操作符时，提示性能的方式。但是，我们可以做的更好...
+在上面这个示例中，四分之三的词都必须匹配，这意味着我们只需考虑那些包含最低频或次低频词的文档。
+相比默认使用 `or` 操作符的简单查询，这为我们带来了巨大的性能提升。不过我们有办法可以做得更好……
 
