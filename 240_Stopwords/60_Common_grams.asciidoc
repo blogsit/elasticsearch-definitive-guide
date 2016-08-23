@@ -1,8 +1,7 @@
 [[common-grams]]
-=== common_grams Token Filter
+=== _common_grams_ 标记过滤器（common_grams Token Filter）
 
-The `common_grams` token filter is designed to make phrase queries with
-stopwords more efficient. ((("stopwords", "phrase queries and", "common_grams token filter")))((("common_grams token filter")))((("phrase matching", "stopwords and", "common_grams token filter")))It is similar to the `shingles` token ((("shingles", "shingles token filter")))filter (see
+ `common_grams` 标记过滤器是针对短语查询能更高效的使用停用词而设计的。 ((("stopwords", "phrase queries and", "common_grams token filter")))((("common_grams token filter")))((("phrase matching", "stopwords and", "common_grams token filter")))It is similar to the `shingles` token ((("shingles", "shingles token filter")))filter (see
 <<shingles>>), which creates _bigrams_ out of every pair of adjacent words. It
 is most easily explained by example.((("bigrams")))
 
