@@ -1,21 +1,19 @@
 [[common-terms]]
-=== 词条区分管理
+=== 词项的分别管理（Divide and Conquer）
 
-在查询字符串时，词条可以分为十分重要 (低频词) 和不太重要 (高频词) 。((("stopwords", "low and high frequency terms"))) 只匹配不太重要词条的文档，很可能是没有多少关联的文档.  然而，我们想
-尽可能多的比较重要的术语的匹配文档。
+在查询字符串中的词项可以分为更重要 (低频词) 和次重要 (高频词) 这两类。((("stopwords", "low and high frequency terms"))) 只与次重要词项匹配的文档很有可能不太相关。实际上，我们想要文档能尽可能多的匹配那些更重要的词项。
 
 
-此`match`查询接受一个((("cutoff_frequency parameter")))((("match query", "cutoff_frequency parameter")))`cutoff_frequency`参数，它允许在查询字符串的词条划分成低频和高频组。((("term frequency", "cutoff_frequency parameter in match query")))低频组（十分重要的术语）形成了大量的查询，而高频率组（不太重要的术语）只为用于评分计算，不匹配。通过区别对待这两组词条，我们可以
-对以前的慢查询获得速度上的提高作用。
+`match` 查询接受一个参数  ((("cutoff_frequency parameter")))((("match query", "cutoff_frequency parameter")))`cutoff_frequency`，从而可以让它将查询字符串里的词项分为低频和高频两组。((("term frequency", "cutoff_frequency parameter in match query")))低频组（更重要的词项）组成 `bulk` 大量查询条件，而高频组（次重要的词项）只会用来评分，而不参与匹配过程。通过对这两组词的区分处理，我们可以在之前慢查询的基础上获得巨大的速度提升。
 
-.特定领域停用词
+.领域相关的停用词（Domain-Specific Stopwords）
 *********************************************
 
- `cutoff_frequency` 配置的好处是，你在 _特定领域_ 使用停用词不受约束。((("domain specific stopwords")))((("stopwords", "domain specific")))例如,关于电影网站使用的词 _movie_，_color_，_black_和_white_ ，这些词往往可能认为几乎没有任何意义。使用 `stop` 词汇单元过滤器，这些特定领域的词条必须手动添加到停用词列表中。然而， `cutoff_frequency` 着眼于这些词条的实际频率指数，这些词条会被自动归类为 _高频词汇_。
+ `cutoff_frequency` 配置的好处是，你在 _特定领域_ 使用停用词不受约束。((("domain specific stopwords")))((("stopwords", "domain specific")))例如,关于电影网站使用的词 _movie_，_color_，_black_和_white_ ，这些词我们往往认为几乎没有任何意义。使用 `stop` 词汇单元过滤器，这些特定领域的词必须手动添加到停用词列表中。然而， `cutoff_frequency` 会查看索引里词项的具体频率，这些词会被自动归类为 _高频词汇_。
 
 *********************************************
 
-使用以下查询作为示例:
+以下面查询为例:
 
 [source,json]
 ---------------------------------
@@ -27,9 +25,9 @@
     }
 }
 ---------------------------------
-<1> 任何词条出现在文档中超过1%，被认为是高频率。`cutoff_frequency` 配置可以指定为一个分数(`0.01`)或者一个正整数(`5`)。
+<1> 任何词项出现在文档中超过1%，被认为是高频词。`cutoff_frequency` 配置可以指定为一个分数(`0.01`)或者一个正整数(`5`)。
 
-此查询通过`cutoff_frequency` 配置，将查询条件划分为低频率组 (`quick`, `dead`)和高频率组 (`and`,
+此查询通过`cutoff_frequency` 配置，将查询条件划分为低频组 (`quick`, `dead`)和高频组 (`and`,
 `the`)。然后，此查询会被重写为以下的`bool` 查询：
 
 [source,json]
@@ -55,22 +53,22 @@
   }
 }
 ---------------------------------
-<1> 必须匹配有一个低频且高重要性词条。
-<2> 高频/低重要性词条是完全可有可无。
+<1> 必须匹配至少一个低频／更重要的词项。
+<2> 高频/次重要性词项是非必须的。
 
-此处`must` 意味着低频率词汇&#x2014;`quick` 或者 `dead`&#x2014 至少有一个匹配；必须存在一个词，此文档被认为是匹配的。所有其他的文档被排除在外。然后`should`子句查找高频词条 `and` 和 `the`，只是在`must` 子句查询的结果集文档中查询。
-`should`子句的唯一的工作就是文档中包含``Quick _and the_ dead''高于包含``_The_ quick but　dead''的得分。这种做法大大减少需要进行检查的文档数目。　
+`must` 意味着至少有一个低频词　&#x2014;`quick` 或者 `dead`&#x2014 必须出现在被匹配文档中。所有其他的文档被排除在外。`should`　语句查找高频词 `and` 和 `the`，但也只是在`must` 语句查询的结果集文档中查询。
+`should`语句的唯一的工作就是在对如``Quick _and the_ dead''和``_The_ quick but　dead''语句进行评分时，前者得分比后者高。这种方式可以大大减少需要进行评分计算的文档数量。
 
 [TIP]
 ==================================================
 
-设置操作参数为`and`，将使用所有低频词条都必须，得分较高是含有较多高频词条的文档。然而，匹配的文档中并不需要包含所有的高频词条。如果你希望所有的低频和高频词条都被指定为必须的。那么你应该使用`bool` 查询方式代替`match`查询。现在正如我们看到的<<stopwords-and>>，这个已经是一个很高效的查询。
+将操作符参数设置成 `and` 会要求所有低频词都必须匹配，同时对包含所有高频词的文档给予更高评分。但是，在匹配文档时，并不要求文档必须包含所有高频词，如果希望文档包含所有的低频和高频词，我们应该使用一个 `bool` 来替代。正如我们在 `and` 操作符（and Operator）<<stopwords-and>> 中看到的，它的查询效率已经很高了。
 
 ==================================================
 
 ==== 控制精度
 
-`minimum_should_match`参数可用　`cutoff_frequency`组合使用，但是此参数仅适用与低频词条。((("stopwords", "low and high frequency terms", "controlling precision")))((("minimum_should_match parameter", "controlling precision")))如以下查询：
+`minimum_should_match`　参数可以与　`cutoff_frequency`　组合使用，但是此参数仅适用与低频词。((("stopwords", "low and high frequency terms", "controlling precision")))((("minimum_should_match parameter", "controlling precision")))如以下查询：
 
 [source,json]
 ---------------------------------
@@ -110,12 +108,12 @@
   }
 }
 ---------------------------------
-<1>　因为只有两个词，原来的75%向下取整为`1`，意思是：二分之一的低频词条必须匹配。
-<2>　高频词条仍可选的，并且仅用于评分使用。
+<1>　因为只有两个词，原来的75%向下取整为`1`，意思是：必须匹配低频词的两者之一。
+<2>　高频词仍可选的，并且仅用于评分使用。
 
-==== 高频词条
+==== 高频词
 
-仅查询 `or` 高频((("stopwords", "low and high frequency terms", "only high frequency terms")))词条，对&#x2014;``To be, or not to be''&#x2014; 词条来说性能太糟糕啦。查询所有文档返回评分最高的前10个。我们真正的意图是查询整个&#x2014;``To be, or not to be''&#x2014;词条出现的文档，所以在这种情况下，不存低频所言，这个查询需要重写为所有高频词条都必须：
+当使用 `or`　查询高频词条((("stopwords", "low and high frequency terms", "only high frequency terms")))，如（``To be, or not to be''）进行查询时性能最差。只是为了返回最匹配的前十个结果就对只是包含这些词的所有文档进行评分是盲目的。我们真正的意图是查询整个　（``To be, or not to be''）词条出现的文档，所以在这种情况下，不存低频所言，这个查询需要重写为所有高频词条都必须：
 
 [source,json]
 ---------------------------------
@@ -133,11 +131,11 @@
 }
 ---------------------------------
 
-==== 对普通词条更多的控制
+==== 对常用词使用更多控制（More Control with Common Terms）
 
-而在`match`查询高/低频词组是非常有用的，有时你想在高频词组和低频词组应如何处理((("stopwords", "low and high frequency terms", "more control over common terms")))更多的控制权利。该`match`查询公开的一个子集功能在((("common terms query"))) `common`词条查询中可用。
+尽管高频/低频的功能在 `match` 查询中是有用的，有时我们还希望能对它((("stopwords", "low and high frequency terms", "more control over common terms")))有更多的控制，想控制它对高频和低频词分组的行为。　`match` 查询针对 ((("common terms query"))) `common` 词项查询提供了一组功能。
 
-例如，我们查询所有的低频词条都是必须的，并且评分高于75%的所有高频词条比如以下查询：
+例如，我们可以让所有低频词都必须匹配，而只对那些包括超过 75% 的高频词文档进行评分：
 
 [source,json]
 ---------------------------------
@@ -155,5 +153,5 @@
 }
 ---------------------------------
 
-查看更多的其他选择项，请参考相关页面{ref}/query-dsl-common-terms-query.html[`common` terms query]。
+更多配置项参见　{ref}/query-dsl-common-terms-query.html[`common` terms query]。
 
