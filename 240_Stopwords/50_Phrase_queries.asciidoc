@@ -1,10 +1,8 @@
 [[stopwords-phrases]]
-=== Stopwords and Phrase Queries
+=== 停用词和短语查询
 
-About 5% of all queries are ((("stopwords", "phrase queries and")))((("phrase matching", "stopwords and")))phrase queries (see <<phrase-matching>>), but they
-often account for the majority of slow queries. Phrase queries can perform
-poorly, especially if the phrase includes very common words; a phrase like
-``To be, or not to be'' could be considered pathological. The reason for this
+所有查询中 ((("stopwords", "phrase queries and")))((("phrase matching", "stopwords and")))短语查询(查看 <<phrase-matching>>)大约占到5%，但是在慢查询里面它们又占大部分。
+短语查询确实性能较差，特别是如果该短语包括很常见的词语;就像一个短语 ``To be, or not to be'' 会被认为是一种病态的. The reason for this
 has to do with the amount of data that is necessary to support proximity
 matching.
 
