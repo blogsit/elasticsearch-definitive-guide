@@ -1,9 +1,9 @@
 [[stopwords-performance]]
 === 停用词与性能
 
-保留禁用词最大的缺点就影响搜索性能。使用Elasticsearch进行((("stopwords", "performance and")))全文搜索，为了返回匹配的前10需要查询关联的`_score`的全部文档。
+保留停用词最大的缺点就影响搜索性能。使用Elasticsearch进行((("stopwords", "performance and")))全文搜索，为了返回匹配的前10需要查询关联的`_score`的全部文档。
 
-虽然大多数的词汇在所有文档中出现的频率低于0.1％，但是少数例如`the`的词汇几乎存在于所有的文档中。试想一下，你有100ｗ个文档。查询`quick brown fox` 词组，能够匹配上的可能少于1000个。但是如果查询`the quick brown fox` ，几乎需要匹配索引中的100ｗ个文档，而只是为了返回前10。
+虽然大多数的单词在所有文档中出现的频率低于0.1％，但是有少数，例如`the` 几乎存在于所有的文档中。假设有一个索引含有100万文档，查询`quick brown fox` 词组，能够匹配上的可能少于1000个。但是如果查询`the quick brown fox` ，几乎需要匹配索引中的100ｗ个文档，而只是为了返回前10。
 
 问题的关键是`the quick brown fox` 词组实际是查询`the`或`quick`或`brown`或`fox`&#x2014;很多包含`the`词条的文档没有任何意义，但包含在返回的结果集中。
 我们需要的是一种方式减少了需要被评分的文档数。
@@ -11,7 +11,7 @@
 [[stopwords-and]]
 ==== 停用词与性能与操作符
 
-最简单的减少查询文件数量的方法是在<<match-improving-precision,`and` operator>>`match`查询时，设置所有词汇 ((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))都是必须的。
+最简单的减少查询文件数量的方法是在<<match-improving-precision,`and` 操作符>>`match`查询时，设置所有词汇 ((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))都是必须的。
 
 以下是`match`查询的设置：
 
@@ -22,6 +22,7 @@
         "text": {
             "query":    "the quick brown fox",
             "operator": "and
+             }
     }
 }
 ---------------------------------
@@ -41,9 +42,8 @@
     }
 }
 ---------------------------------
-
- `bool`查询器足够智能，在执行每一个`term`查询的最佳次序--他开始用最少的频繁词。因为所有条款
-是必需的，只包含至少频繁词文件都不可能匹配。使用`and`操作符将大大加快多条查询。
+ `bool`查询是足够智能的，它以最优的次序来执行每一个`term`查询。因为所有词条
+是必需的，只包含词频最小的词条不可能匹配。使用`and`操作符将大大加快多项查询。
 
 ==== 最低匹配(minimum_should_match)
 
