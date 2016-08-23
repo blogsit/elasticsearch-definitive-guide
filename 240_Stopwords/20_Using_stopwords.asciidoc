@@ -1,24 +1,23 @@
 [[using-stopwords]]
 === 如何使用停用词
 
-停用词的去除 ((("stopwords", "removal of")))处理 {ref}/analysis-stop-tokenfilter.html[stop token filter]可以应用((("stop token filter")))在创建一个`custom` 分析器(see <<stop-token-filter>>)。
-然而一些对外的分析器((("analyzers", "stop filter pre-integrated")))((("pattern analyzer", "stopwords and")))((("standard analyzer", "stop filter")))((("language analyzers", "stop filter pre-integrated"))) 预先集成了`stop` 过滤器 :
+移除停用词的工作是由 `stop` 停用词标记过滤器完成的，可以通过创建自定义的分析器来使用它（参见 使用停用词标记分析器{ref}/analysis-stop-tokenfilter.html [`stop` 停用词标记过滤器])。但是，也有一些自带的分析器预置使用停用词标记分析器：
 
-{ref}/analysis-lang-analyzer.html[Language analyzers]::
+{ref}/analysis-lang-analyzer.html[语言分析器]::
 
-    每一种语言分析器默认使用适当的停用词列表用于该语言，例如：`english`分析器使用`_english_`停用词。
+    每个语言分析器默认使用与该语言相适的停用词列表，例如：`english`英语分析器使用`_english_`停用词列表。
 
-{ref}/analysis-standard-analyzer.html[`standard` analyzer]::
+{ref}/analysis-standard-analyzer.html[`standard` 标准分析器]::
 
-    默认为空停用词：`_none_` 基本上是禁用停用词。
+    默认使用空的停用词列表：`_none_` 实际上是禁用了停用词。
 
-{ref}/analysis-pattern-analyzer.html[`pattern` analyzer]::
+{ref}/analysis-pattern-analyzer.html[`pattern` 模式分析器]::
 
-    默认为`_none_`，类似 `standard`分析器。
+    默默认使用空的停用词列表：为`_none_`，与 `standard`分析器类似。
 
-==== 停用词和standard分析器
+==== 停用词和标准分析器（Stopwords and the Standard Analyzer）
 
-当结合 ((("standard analyzer", "stopwords and")))((("stopwords", "using with standard analyzer"))) standard分析器使用自定义停用词时，我们所需要做的就是创建一个配置版本的分析器，并把我们需要的的停用词传入进去：
+为了让((("standard analyzer", "stopwords and")))标准分析器能与((("stopwords", "using with standard analyzer")))自定义停用词表连用，我们要做的只需创建一个分析器的配置好的版本，然后将停用词列表传入：
 
 [source,json]
 ---------------------------------
@@ -37,13 +36,13 @@ PUT /my_index
 }
 ---------------------------------
 <1> 自定义的分析器名称为 `my_analyzer`。
-<2> 该分析器是'standard`分析器。
+<2> 这个分析器是一个标准 `standard` 分析器，进行了一些自定义配置。
 <3> 过滤掉的停用词包括`and` 和 `the`。
 
 TIP: 任何语言分析器都可以使用相同的方式配置自定义停用词。
 
 [[maintaining-positions]]
-==== 维护位置
+==== 保持位置（Maintaining Positions）
 
  `analyzer` API((("stopwords", "maintaining position of terms and")))的输出结果很有趣: 
 
@@ -76,13 +75,12 @@ The quick and the dead
 ---------------------------------
 <1> `position` 标记每个词汇单元的位置 .
 
-和预期的一样，停用词被过滤掉了，但是有趣的是剩下的两个词条位置((("phrase matching", "stopwords and", "positions data")))没有变化:
-`quick` 是在原句第二个词条，`dead` 是第五个词条。这个机制对于短语查询很重要--如果保留的词条的位置被调整，那么查询`quick dead`就会出现错误的匹配。
+停用词如我们期望被过滤掉了，但有趣的是两个词项的位置 `position` 没有变化：`quick` 是原句子的第二个词，`dead` 是第五个。这对短语查询十分重要，因为如果每个词项的位置被调整了，一个短语查询 `quick dead `会与以上示例中的文档错误匹配。
 
 [[specifying-stopwords]]
-==== 指定停用词
+==== 指定停用词（Specifying Stopwords）
 
-停用词可以在线传递，就像我们在前面的((("stopwords", "specifying")))例子中那样，通过指定数组:
+停用词可以以内联的方式传入，就像我们在前面的((("stopwords", "specifying")))例子中那样，通过指定数组:
 
 [source,json]
 ---------------------------------
@@ -97,11 +95,9 @@ The quick and the dead
 ---------------------------------
 
 TIP: 
-在Elasticsearch提供预定义的特定语言的停用词(("languages", "predefined stopword lists for")))可以
-在{ref}/analysis-stop-tokenfilter.html[`stop` token filter] 文档中找到。
+Elasticsearch中预定义的与语言相关的停用词列表可以在文档(("languages", "predefined stopword lists for"))) {ref}/analysis-stop-tokenfilter.html[`stop` token filter] 中找到。
 
-
-可以通过设置特殊的数组：`_none_`来禁用停用词((("stopwords", "disabling")))。例如，使用 `english`  分析器((("english analyzer", "using without stopwords")))并禁用停用词时，可以如下设置：
+停用词可以通过指定一个特殊列表 `__none_`_ 来禁用。例如，使用 `_english`_ 分析器而不使用停用词，可以通过以下方式做到：
 
 [source,json]
 ---------------------------------
@@ -143,7 +139,7 @@ PUT /my_index
 <1> 停用词文件的路径，该路径相对于Elasticsearch的 `config` 目录。
 
 [[stop-token-filter]]
-==== 停用语汇单元过滤器的使用
+==== 使用停用词标记过滤器（Using the stop Token Filter）
 
 当你创建 `custom` 分析器时候，可以组合多个{ref}/analysis-stop-tokenfilter.html[`stop` token filter] 分词器((("stopwords", "using stop token filter")))((("stop token filter", "using in custom analyzer")))。例如：我们想要创建一个西班牙语((("Spanish", "custom analyzer for")))((("light_spanish stemmer")))的分析器:
 
@@ -151,7 +147,7 @@ PUT /my_index
 * `light_spanish` 词干提取器
 * 在 `asciifolding` 词汇单元过滤器中除去附加符号
 
-我们可以设置如下:
+我们可以通过以下设置完成:
 
 [source,json]
 ---------------------------------
@@ -185,23 +181,23 @@ PUT /my_index
 }
 ---------------------------------
 <1> `stop`词汇单元过滤器采用与`standard`分析器相同的参数 `stopwords` 和 `stopwords_path`。
-<2> 看算法提取器。
-<3> 语汇单元过滤器的顺序非常重要，请看下面的介绍。
+<2> 参见 算法提取器（Algorithmic Stemmers）。
+<3> 标记过滤器的顺序非常重要，下面会进行解释。
 
 我们将`spanish_stop`过滤器放置在 `asciifolding` 过滤器之后.这意味着有一下三个词组`esta`＼　`ésta`＼　++está++，先通过`asciifolding` 过滤器过滤掉特殊字符变成了`esta`，随后使用停用词过滤器会将`esta`去除。
 如果我们只想移除`esta` 和`ésta`，但是`++está++`不想移除。必须将`spanish_stop` 过滤器放置在`asciifolding`之前，并且需要在停用词中指定`esta` 和`ésta`。
 
 [[updating-stopwords]]
-==== 更新停用词
+==== 更新停用词（Updating Stopwords）
 
-一些技术可以用来更新停用词应用于分析器。((("analyzers", "stopwords list, updating")))((("stopwords", "updating list used by analyzers"))) 分析器在创建索引时，当集群节点重启时候，或者关闭的索引重新打开的时候。
+想要更新分析器的停用词列表有多种方式，((("analyzers", "stopwords list, updating")))((("stopwords", "updating list used by analyzers"))) 分析器在创建索引时，当集群节点重启时候，或者关闭的索引重新打开的时候。
 
-如果你使用`stopwords`指定停用词，那么你只能通过关闭索引，更新分析器的配置{ref}/indices-update-settings.html#update-settings-analysis[update index settings API]，然后在重新打开索引才能更新停用词。
+如果你使用`stopwords` 参数以内联方式指定停用词，那么你只能通过关闭索引，更新分析器的配置{ref}/indices-update-settings.html#update-settings-analysis[update index settings API]，然后在重新打开索引才能更新停用词。
 
 如果你使用`stopwords_path` 参数指定停用词的文件路径((("stopwords_path parameter"))) ，那么更新停用词就简单了。你只需更新文件(在每一个集群节点上)，然后强制重启分析器这两个操作:
 
-* 关闭并重新打开索引
-  (see {ref}/indices-open-close.html[open/close index])，
-* 一个接个重新启动集群中的每个节点
+* 关闭和重新打开索引
+  (参考 {ref}/indices-open-close.html[索引的开与关])，
+* 一一重启集群下的每个节点。
 
-当然，更新的停用词不会改变任何已经存在的索引。这些停用词的只适用于新的搜索或更新文档。如果要改变现有的文档，则需要重新索引数据。see <<reindex>> 。
+当然，更新的停用词不会改变任何已经存在的索引。这些停用词的只适用于新的搜索或更新文档。如果要改变现有的文档，则需要重新索引数据。参加 <<reindex>> 。
