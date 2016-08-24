@@ -5,5 +5,5 @@
 
 正如我们已经在 词频饱和度（(("BM25", "term frequency saturation"))) 中讨论过的 <<bm25-saturation>>，原因在于 ((("Term Frequency/Inverse Document Frequency  (TF/IDF) similarity algorithm", "stopwords and"))) 没有为词频的影响设置上限，非常常用的词可能由于文档的长度很长，而降低它们的重要性，停用词如果在单个文档中的出现频率陡增，也可能导致他们的权重值被人为刺激而变大。
 
-可能也会考虑对较长字段使用 <<bm25,Okapi BM25>>  相似度算法，并且包括使用停用词，而不是默认的 Lucene 相似度。
+可以考虑对包含停用词的较长字段使用 <<bm25,Okapi BM25>> 相似度算法，并且包括使用停用词，而不是默认的 Lucene 相似度。
 
