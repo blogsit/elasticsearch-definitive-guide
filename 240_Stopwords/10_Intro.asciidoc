@@ -31,7 +31,7 @@
     no, not, of, on, or, such, that, the, their, then, there, these,
     they, this, to, was, will, with
 
-这些 _停用词_ 通常在索引前就可以被过滤掉，对检索的负面影响不大。但是这样做真的是一个较好的解决方案？
+这些 _停用词_ 通常在索引前就可以被过滤掉，同时对检索的负面影响不大。但是这样做真的是一个较好的解决方案？
 
 [[pros-cons-stopwords]]
 [float="true"]
