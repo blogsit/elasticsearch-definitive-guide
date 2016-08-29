@@ -10,7 +10,7 @@
 [[stopwords-and]]
 ==== and 操作符 (and Operator)
 
-我们想要减少带评分文档的数量，最简单的方式就是在<<match-improving-precision,`and` 操作符>> `match` 查询时使用 `and` 操作符，((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))这样可以让所有词都是必须的。
+我们想要减少待评分文档的数量，最简单的方式就是在<<match-improving-precision,`and` 操作符>> `match` 查询时使用 `and` 操作符，((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))这样可以让所有词都是必须的。
 
 以下是`match`查询：
 
@@ -46,7 +46,7 @@
 
 ==== 最少匹配数(minimum_should_match)
 
-在精度匹配<<match-precision>>的章节里面，我们讨论过使用`minimum_should_match` 配置去掉结果中次相关的长尾。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))虽然它只对这个目的奏效，但是也为我们从侧面带来一个好处，，它提供`and`操作符相似的性能。
+在精度匹配<<match-precision>>的章节里面，我们讨论过使用`minimum_should_match` 配置去掉结果中次相关的长尾。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))虽然它只对这个目的奏效，但是也为我们从侧面带来一个好处，它提供`and`操作符相似的性能。
 
 [source,json]
 ---------------------------------
