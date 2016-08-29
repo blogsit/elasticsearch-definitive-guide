@@ -1,7 +1,7 @@
 [[using-stopwords]]
 === 如何使用停用词
 
-移除停用词的工作是由 `stop` 停用词标记过滤器完成的，可以通过创建自定义的分析器来使用它（参见 使用停用词标记分析器{ref}/analysis-stop-tokenfilter.html [`stop` 停用词标记过滤器])。但是，也有一些自带的分析器预置使用停用词标记分析器：
+移除停用词的工作是由 `stop` 停用词过滤器完成的，可以通过创建自定义的分析器来使用它（参见 使用停用词分析器{ref}/analysis-stop-tokenfilter.html [`stop` 停用词过滤器])。但是，也有一些自带的分析器预置使用停用词分析器：
 
 {ref}/analysis-lang-analyzer.html[语言分析器]::
 
@@ -139,7 +139,7 @@ PUT /my_index
 <1> 停用词文件的路径，该路径相对于Elasticsearch的 `config` 目录。
 
 [[stop-token-filter]]
-==== 使用停用词标记过滤器（Using the stop Token Filter）
+==== 使用停用词过滤器（Using the stop Token Filter）
 
 当你创建 `custom` 分析器时候，可以组合多个{ref}/analysis-stop-tokenfilter.html[`stop` token filter] 分词器((("stopwords", "using stop token filter")))((("stop token filter", "using in custom analyzer")))。例如：我们想要创建一个西班牙语((("Spanish", "custom analyzer for")))((("light_spanish stemmer")))的分析器:
 
