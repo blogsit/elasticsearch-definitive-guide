@@ -95,5 +95,5 @@ PUT /my_index
   
 删除停用词是能显著降低位置信息所占空间的一种方式。 ((("stopwords", "phrase queries and", "removing stopwords")))   一个被删除停用词的索引仍然可以使用短语查询，因为剩下的词的原始位置仍然被保存着，这正如 保持位置 <<maintaining-positions>> 中看到的那样。 尽管如此，将词项从索引中排除终究会降低搜索能力，这使我们难以区分  _Man in the moon_ 与  _Man on the moon_ 这两个短语。
 
-幸运的是，鱼与熊掌是可以兼得的：请查看 <<common-grams,`common_grams` token filter>> 标记过滤器。
+幸运的是，鱼与熊掌是可以兼得的：请查看 <<common-grams,`common_grams` 过滤器>>。
 
