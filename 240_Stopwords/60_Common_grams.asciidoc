@@ -1,9 +1,9 @@
 [[common-grams]]
-=== _common_grams_ 标记过滤器（common_grams Token Filter）
+=== _common_grams_ 过滤器（common_grams Token Filter）
 
- `common_grams` 标记过滤器是针对短语查询能更高效的使用停用词而设计的。 ((("stopwords", "phrase queries and", "common_grams token filter")))((("common_grams token filter")))((("phrase matching", "stopwords and", "common_grams token filter")))它与 shingles 标记过滤器((("shingles", "shingles token filter")))类似（参见 查找相关词（<<shingles>>)), 为每个相邻词对生成 ((("bigrams")))，用示例解释更为容易。
+ `common_grams` 过滤器是针对短语查询能更高效的使用停用词而设计的。 ((("stopwords", "phrase queries and", "common_grams token filter")))((("common_grams token filter")))((("phrase matching", "stopwords and", "common_grams token filter")))它与 shingles 过滤器((("shingles", "shingles token filter")))类似（参见 查找相关词（<<shingles>>)), 为每个相邻词对生成 ((("bigrams")))，用示例解释更为容易。
 
-`common_grams` 标记过滤器根据 `query_mode` 设置的不同而生成不同输出结果：`false`（为索引使用） 或 `true`（为搜索使用），所以我们必须创建两个独立的分析器：
+`common_grams` 过滤器根据 `query_mode` 设置的不同而生成不同输出结果：`false`（为索引使用） 或 `true`（为搜索使用），所以我们必须创建两个独立的分析器：
 
 [source,json]
 -------------------------------
@@ -37,7 +37,7 @@ PUT /my_index
 }
 -------------------------------
 
-<1> 首先我们基于 `common_grams` 标记过滤器创建两个标记过滤器： 
+<1> 首先我们基于 `common_grams` 过滤器创建两个过滤器： 
     `index_filter` 在索引时使用（此时 `query_mode`  的默认设置是 `false`），`search_filter` 在查询时使用（此时 `query_mode` 的默认设置是 `true`）。
 
 <2> `common_words` 参数可以接受与 `stopwords` 参数同样的选项（参见 指定停用词 <<specifying-stopwords>> ）。这个过滤器还可以接受参数 `common_words_path`，使用存于文件里的常用词。
@@ -168,4 +168,4 @@ GET /my_index/_search
 }
 -------------------------------
 
-那么 `search_grams` 分析器会输出单个标记：`the_quick`。这将原来昂贵的查询（查询 `the` 和 `quick`）转换成了对单个词项的高效查找。
+那么 `search_grams` 分析器会输出单个语汇单元：`the_quick`。这将原来昂贵的查询（查询 `the` 和 `quick`）转换成了对单个词项的高效查找。
