@@ -1,7 +1,7 @@
 [[using-stopwords]]
 === 如何使用停用词
 
-移除停用词的工作是由 `stop` 停用词过滤器完成的，可以通过创建自定义的分析器来使用它（参见 使用停用词分析器{ref}/analysis-stop-tokenfilter.html [`stop` 停用词过滤器])。但是，也有一些自带的分析器预置使用停用词分析器：
+移除停用词的工作是由 `stop` 停用词过滤器完成的，可以通过创建自定义的分析器来使用它（参见 使用停用词过滤器{ref}/analysis-stop-tokenfilter.html [`stop` 停用词过滤器])。但是，也有一些自带的分析器预置使用停用词过滤器：
 
 {ref}/analysis-lang-analyzer.html[语言分析器]::
 
@@ -180,9 +180,9 @@ PUT /my_index
   }
 }
 ---------------------------------
-<1> `stop` 词汇单元过滤器采用与 `standard` 分析器相同的参数 `stopwords` 和 `stopwords_path`。
+<1> 停用词过滤器采用与 `standard` 分析器相同的参数 `stopwords` 和 `stopwords_path`。
 <2> 参见 算法提取器（Algorithmic Stemmers）。
-<3> 标记过滤器的顺序非常重要，下面会进行解释。
+<3> 过滤器的顺序非常重要，下面会进行解释。
 
 我们将 `spanish_stop` 过滤器放置在 `asciifolding` 过滤器之后.这意味着以下三个词组 `esta`、`ésta` 、`++está++`，先通过 `asciifolding` 过滤器过滤掉特殊字符变成了 `esta`，随后使用停用词过滤器会将 `esta` 去除。
 如果我们只想移除 `esta` 和 `ésta`，但是 `++está++` 不想移除。必须将 `spanish_stop` 过滤器放置在 `asciifolding` 之前，并且需要在停用词中指定 `esta` 和 `ésta`。
