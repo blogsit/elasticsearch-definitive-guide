@@ -1,18 +1,18 @@
 [[stopwords-performance]]
 === 停用词与性能
 
-保留停用词最大的缺点就影响搜索性能。使用Elasticsearch进行((("stopwords", "performance and")))全文搜索，它需要为所有匹配的文档计算相关度评分 `_score` 从而返回最相关的前 10 个文档。
+保留停用词最大的缺点就影响搜索性能。使用 Elasticsearch 进行((("stopwords", "performance and")))全文搜索，它需要为所有匹配的文档计算相关度评分 `_score` 从而返回最相关的前 10 个文档。
 
-通常大多数的单词在所有文档中出现的频率低于0.1％，但是有少数词（例如`the`）几乎存在于所有的文档中。假设有一个索引含有100万个文档，查询 `quick brown fox` 词组，能够匹配上的可能少于1000个文档。但是如果查询`the quick brown fox` 词组，几乎需要对索引中的100万个文档进行评分和排序，只是为了返回前 10 名最相关的文档。
+通常大多数的单词在所有文档中出现的频率低于0.1％，但是有少数词（例如 `the` ）几乎存在于所有的文档中。假设有一个索引含有100万个文档，查询 `quick brown fox` 词组，能够匹配上的可能少于1000个文档。但是如果查询 `the quick brown fox` 词组，几乎需要对索引中的100万个文档进行评分和排序，只是为了返回前 10 名最相关的文档。
 
-问题的关键是`the quick brown fox` 词组实际是查询`the`或`quick`或`brown`或`fox`&#x2014; 任何文档即使它什么内容都没有而只包含 `the` 这个词也会被包括在结果集中。因此，我们需要找到一种降低待评分文档数量的方法。
+问题的关键是 `the quick brown fox` 词组实际是查询 `the` 或 `quick` 或 `brown` 或 `fox`&#x2014; 任何文档即使它什么内容都没有而只包含 `the` 这个词也会被包括在结果集中。因此，我们需要找到一种降低待评分文档数量的方法。
 
 [[stopwords-and]]
 ==== and 操作符 (and Operator)
 
 我们想要减少待评分文档的数量，最简单的方式就是在<<match-improving-precision,`and` 操作符>> `match` 查询时使用 `and` 操作符，((("stopwords", "performance and", "using and operator")))((("and operator", "using with match query")))这样可以让所有词都是必须的。
 
-以下是`match`查询：
+以下是 `match` 查询：
 
 [source,json]
 ---------------------------------
@@ -26,7 +26,7 @@
 }
 ---------------------------------
 
-上述查询被重写为`bool`查询如下：
+上述查询被重写为 `bool` 查询如下：
 
 [source,json]
 ---------------------------------
@@ -46,7 +46,7 @@
 
 ==== 最少匹配数(minimum_should_match)
 
-在精度匹配<<match-precision>>的章节里面，我们讨论过使用`minimum_should_match` 配置去掉结果中次相关的长尾。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))虽然它只对这个目的奏效，但是也为我们从侧面带来一个好处，它提供`and`操作符相似的性能。
+在精度匹配<<match-precision>>的章节里面，我们讨论过使用 `minimum_should_match` 配置去掉结果中次相关的长尾。((("stopwords", "performance and", "using minimum_should_match operator")))((("minimum_should_match parameter")))虽然它只对这个目的奏效，但是也为我们从侧面带来一个好处，它提供 `and` 操作符相似的性能。
 
 [source,json]
 ---------------------------------
