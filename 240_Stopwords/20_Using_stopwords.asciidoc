@@ -68,7 +68,7 @@ The quick and the dead
          "start_offset": 18,
          "end_offset":   22,
          "type":         "<ALPHANUM>",
-         "position":     4 <1>
+         "position":     4 
       }
    ]
 }
@@ -95,7 +95,7 @@ The quick and the dead
 ---------------------------------
 
 TIP: 
-Elasticsearch 中预定义的与语言相关的停用词列表可以在文档(("languages", "predefined stopword lists for"))) {ref}/analysis-stop-tokenfilter.html[`stop` 语汇单元过滤器] 中找到。
+Elasticsearch 中预定义的与语言相关的停用词列表可以在文档(("languages", "predefined stopword lists for"))){ref}/analysis-stop-tokenfilter.html[`stop` 停用词过滤器] 中找到。
 
 停用词可以通过指定一个特殊列表 `_none_` 来禁用。例如，使用 `_english_` 分析器而不使用停用词，可以通过以下方式做到：
 
@@ -141,7 +141,7 @@ PUT /my_index
 [[stop-token-filter]]
 ==== 使用停用词过滤器（Using the stop Token Filter）
 
-当你创建 `custom` 分析器时候，可以组合多个{ref}/analysis-stop-tokenfilter.html[`stop` token filter] 分词器((("stopwords", "using stop token filter")))((("stop token filter", "using in custom analyzer")))。例如：我们想要创建一个西班牙语((("Spanish", "custom analyzer for")))((("light_spanish stemmer")))的分析器:
+当你创建 `custom` 分析器时候，可以组合多个 {ref}/analysis-stop-tokenfilter.html[`stop` 停用词过滤器] 分词器((("stopwords", "using stop token filter")))((("stop token filter", "using in custom analyzer")))。例如：我们想要创建一个西班牙语((("Spanish", "custom analyzer for")))((("light_spanish stemmer")))的分析器:
 
 * 自定义停用词列表
 * `light_spanish` 词干提取器
@@ -180,12 +180,12 @@ PUT /my_index
   }
 }
 ---------------------------------
-<1> 停用词过滤器采用与 `standard` 分析器相同的参数 `stopwords` 和 `stopwords_path`。
+<1> 停用词过滤器采用与 `standard` 分析器相同的参数 `stopwords` 和 `stopwords_path` 。
 <2> 参见 算法提取器（Algorithmic Stemmers）。
 <3> 过滤器的顺序非常重要，下面会进行解释。
 
-我们将 `spanish_stop` 过滤器放置在 `asciifolding` 过滤器之后.这意味着以下三个词组 `esta`、`ésta` 、`++está++`，先通过 `asciifolding` 过滤器过滤掉特殊字符变成了 `esta`，随后使用停用词过滤器会将 `esta` 去除。
-如果我们只想移除 `esta` 和 `ésta`，但是 `++está++` 不想移除。必须将 `spanish_stop` 过滤器放置在 `asciifolding` 之前，并且需要在停用词中指定 `esta` 和 `ésta`。
+我们将 `spanish_stop` 过滤器放置在 `asciifolding` 过滤器之后.这意味着以下三个词组 `esta` 、`ésta` 、`++está++` ，先通过 `asciifolding` 过滤器过滤掉特殊字符变成了 `esta` ，随后使用停用词过滤器会将 `esta` 去除。
+如果我们只想移除 `esta` 和 `ésta` ，但是 `++está++` 不想移除。必须将 `spanish_stop` 过滤器放置在 `asciifolding` 之前，并且需要在停用词中指定 `esta` 和 `ésta` 。
 
 [[updating-stopwords]]
 ==== 更新停用词（Updating Stopwords）
