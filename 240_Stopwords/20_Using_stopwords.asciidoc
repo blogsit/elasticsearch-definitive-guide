@@ -44,7 +44,7 @@ TIP: 任何语言分析器都可以使用相同的方式配置自定义停用词
 [[maintaining-positions]]
 ==== 保持位置（Maintaining Positions）
 
- `analyzer` API((("stopwords", "maintaining position of terms and")))的输出结果很有趣: 
+`analyzer` API((("stopwords", "maintaining position of terms and")))的输出结果很有趣: 
 
 [source,json]
 ---------------------------------
@@ -75,7 +75,7 @@ The quick and the dead
 ---------------------------------
 <1> `position` 标记每个词汇单元的位置。
 
-停用词如我们期望被过滤掉了，但有趣的是两个词项的位置 `position` 没有变化：`quick` 是原句子的第二个词，`dead` 是第五个。这对短语查询十分重要，因为如果每个词项的位置被调整了，一个短语查询 `quick dead ` 会与以上示例中的文档错误匹配。
+停用词如我们期望被过滤掉了，但有趣的是两个词项的位置 `position` 没有变化：`quick` 是原句子的第二个词，`dead` 是第五个。这对短语查询十分重要，因为如果每个词项的位置被调整了，一个短语查询 `quick dead` 会与以上示例中的文档错误匹配。
 
 [[specifying-stopwords]]
 ==== 指定停用词（Specifying Stopwords）
