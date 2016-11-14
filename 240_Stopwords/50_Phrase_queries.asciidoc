@@ -4,7 +4,7 @@
 所有查询中 ((("stopwords", "phrase queries and")))((("phrase matching", "stopwords and")))短语查询(查看 <<phrase-matching>>)大约占到5%，但是在慢查询里面它们又占大部分。
 短语查询可能性能非常差，特别是当短语包括常用词的时候，如``To be, or not to be''被认为是相当不正常的。原因在于必须支持近似匹配的数据量。
 
-在 停用词的两面（Pros and Cons of Stopwords）<<pros-cons-stopwords>>,中，我们提到移除停用词只能节省倒排索引中的一小部分空间。这句话只部分正确，一个典型的索引会可能包含部分或所有以下数据：
+在 停用词的两面 <<pros-cons-stopwords>>,中，我们提到移除停用词只能节省倒排索引中的一小部分空间。这句话只部分正确，一个典型的索引会可能包含部分或所有以下数据：
 
 词项字典（Terms dictionary）::
 
@@ -93,7 +93,7 @@ PUT /my_index
 
 ==== 停用词（Stopwords）
   
-删除停用词是能显著降低位置信息所占空间的一种方式。 ((("stopwords", "phrase queries and", "removing stopwords")))   一个被删除停用词的索引仍然可以使用短语查询，因为剩下的词的原始位置仍然被保存着，这正如 保持位置 <<maintaining-positions>> 中看到的那样。 尽管如此，将词项从索引中排除终究会降低搜索能力，这使我们难以区分  _Man in the moon_ 与  _Man on the moon_ 这两个短语。
+删除停用词是能显著降低位置信息所占空间的一种方式。 ((("stopwords", "phrase queries and", "removing stopwords")))   一个被删除停用词的索引仍然可以使用短语查询，因为剩下的词的原始位置仍然被保存着，这正如 <<maintaining-positions>> 中看到的那样。 尽管如此，将词项从索引中排除终究会降低搜索能力，这使我们难以区分  _Man in the moon_ 与  _Man on the moon_ 这两个短语。
 
 幸运的是，鱼与熊掌是可以兼得的：请查看 <<common-grams,`common_grams` 过滤器>>。
 
