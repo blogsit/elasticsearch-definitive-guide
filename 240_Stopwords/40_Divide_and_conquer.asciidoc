@@ -6,10 +6,10 @@
 
 `match` 查询接受一个参数  ((("cutoff_frequency parameter")))((("match query", "cutoff_frequency parameter")))`cutoff_frequency`，从而可以让它将查询字符串里的词项分为低频和高频两组。((("term frequency", "cutoff_frequency parameter in match query")))低频组（更重要的词项）组成 `bulk` 大量查询条件，而高频组（次重要的词项）只会用来评分，而不参与匹配过程。通过对这两组词的区分处理，我们可以在之前慢查询的基础上获得巨大的速度提升。
 
-.领域相关的停用词（Domain-Specific Stopwords）
+领域相关的停用词（Domain-Specific Stopwords）
 *********************************************
 
- `cutoff_frequency` 配置的好处是，你在 _特定领域_ 使用停用词不受约束。((("domain specific stopwords")))((("stopwords", "domain specific")))例如,关于电影网站使用的词 _movie_，_color_，_black_和_white_ ，这些词我们往往认为几乎没有任何意义。使用 `stop` 词汇单元过滤器，这些特定领域的词必须手动添加到停用词列表中。然而， `cutoff_frequency` 会查看索引里词项的具体频率，这些词会被自动归类为 _高频词汇_。
+`cutoff_frequency` 配置的好处是，你在 _特定领域_ 使用停用词不受约束。((("domain specific stopwords")))((("stopwords", "domain specific")))例如,关于电影网站使用的词 _movie_ ，_color_ ，_black_ 和 _white_ ，这些词我们往往认为几乎没有任何意义。使用 `stop` 词汇单元过滤器，这些特定领域的词必须手动添加到停用词列表中。然而 `cutoff_frequency` 会查看索引里词项的具体频率，这些词会被自动归类为 _高频词汇_ 。
 
 *********************************************
 
@@ -27,8 +27,7 @@
 ---------------------------------
 <1> 任何词项出现在文档中超过1%，被认为是高频词。`cutoff_frequency` 配置可以指定为一个分数(`0.01`)或者一个正整数(`5`)。
 
-此查询通过`cutoff_frequency` 配置，将查询条件划分为低频组 (`quick`, `dead`)和高频组 (`and`,
-`the`)。然后，此查询会被重写为以下的`bool` 查询：
+此查询通过`cutoff_frequency` 配置，将查询条件划分为低频组 (`quick`, `dead`)和高频组 (`and`,`the`)。然后，此查询会被重写为以下的`bool` 查询：
 
 [source,json]
 ---------------------------------
@@ -113,7 +112,7 @@
 
 ==== 高频词
 
-当使用 `or`　查询高频词条((("stopwords", "low and high frequency terms", "only high frequency terms")))，如（``To be, or not to be''）进行查询时性能最差。只是为了返回最匹配的前十个结果就对只是包含这些词的所有文档进行评分是盲目的。我们真正的意图是查询整个　（``To be, or not to be''）词条出现的文档，所以在这种情况下，不存低频所言，这个查询需要重写为所有高频词条都必须：
+当使用 `or`　查询高频词条((("stopwords", "low and high frequency terms", "only high frequency terms")))，如（&#x2014;``To be, or not to be''）&#x2014;进行查询时性能最差。只是为了返回最匹配的前十个结果就对只是包含这些词的所有文档进行评分是盲目的。我们真正的意图是查询整个&#x2014;（``To be, or not to be''）&#x2014;词条出现的文档，所以在这种情况下，不存低频所言，这个查询需要重写为所有高频词条都必须：
 
 [source,json]
 ---------------------------------
