@@ -1,5 +1,5 @@
 [[common-grams]]
-=== common_grams 过滤器（common_grams Token Filter）
+=== common_grams 过滤器
 
 `common_grams` 过滤器是针对短语查询能更高效的使用停用词而设计的。 ((("stopwords", "phrase queries and", "common_grams token filter")))((("common_grams token filter")))((("phrase matching", "stopwords and", "common_grams token filter")))它与 shingles 过滤器((("shingles", "shingles token filter")))类似（参见 查找相关词（<<shingles>>)), 为每个相邻词对生成 ((("bigrams")))，用示例解释更为容易。
 
