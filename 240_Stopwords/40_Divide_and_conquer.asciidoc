@@ -4,7 +4,7 @@
 在查询字符串中的词项可以分为更重要 (低频词) 和次重要 (高频词) 这两类。((("stopwords", "low and high frequency terms"))) 只与次重要词项匹配的文档很有可能不太相关。实际上，我们想要文档能尽可能多的匹配那些更重要的词项。
 
 
-`match` 查询接受一个参数  ((("cutoff_frequency parameter")))((("match query", "cutoff_frequency parameter")))`cutoff_frequency`，从而可以让它将查询字符串里的词项分为低频和高频两组。((("term frequency", "cutoff_frequency parameter in match query")))低频组（更重要的词项）组成 `bulk` 大量查询条件，而高频组（次重要的词项）只会用来评分，而不参与匹配过程。通过对这两组词的区分处理，我们可以在之前慢查询的基础上获得巨大的速度提升。
+`match` 查询接受一个参数  ((("cutoff_frequency parameter")))((("match query", "cutoff_frequency parameter")))`cutoff_frequency` ，从而可以让它将查询字符串里的词项分为低频和高频两组。((("term frequency", "cutoff_frequency parameter in match query")))低频组（更重要的词项）组成 `bulk` 大量查询条件，而高频组（次重要的词项）只会用来评分，而不参与匹配过程。通过对这两组词的区分处理，我们可以在之前慢查询的基础上获得巨大的速度提升。
 
 领域相关的停用词（Domain-Specific Stopwords）
 *********************************************
@@ -55,7 +55,7 @@
 <1> 必须匹配至少一个低频／更重要的词项。
 <2> 高频/次重要性词项是非必须的。
 
-`must` 意味着至少有一个低频词　&#x2014;`quick` 或者 `dead`&#x2014 必须出现在被匹配文档中。所有其他的文档被排除在外。`should`　语句查找高频词 `and` 和 `the`，但也只是在`must` 语句查询的结果集文档中查询。
+`must` 意味着至少有一个低频词　&#x2014; `quick` 或者 `dead` &#x2014; 必须出现在被匹配文档中。所有其他的文档被排除在外。`should`　语句查找高频词 `and` 和 `the`，但也只是在`must` 语句查询的结果集文档中查询。
 `should`语句的唯一的工作就是在对如``Quick _and the_ dead''和``_The_ quick but　dead''语句进行评分时，前者得分比后者高。这种方式可以大大减少需要进行评分计算的文档数量。
 
 [TIP]
@@ -66,8 +66,7 @@
 ==================================================
 
 ==== 控制精度
-
-`minimum_should_match`　参数可以与　`cutoff_frequency`　组合使用，但是此参数仅适用与低频词。((("stopwords", "low and high frequency terms", "controlling precision")))((("minimum_should_match parameter", "controlling precision")))如以下查询：
+`minimum_should_match` 参数可以与 `cutoff_frequency` 组合使用，但是此参数仅适用与低频词。((("stopwords", "low and high frequency terms", "controlling precision")))((("minimum_should_match parameter", "controlling precision")))如以下查询：
 
 [source,json]
 ---------------------------------
